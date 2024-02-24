@@ -1,0 +1,89 @@
+
+create table Medicines(
+Id serial primary key,
+Name varchar(35) not null
+);
+
+
+create table Category_medicine(
+Id serial primary key,
+Category_name varchar(45)
+);
+
+
+alter table Medicines
+add column Cost Decimal(10, 2);
+
+Create table Clients(
+Id serial primary key,
+Date date,
+Time time);
+
+create table Workers(
+Id serial primary key,
+Name varchar(45),
+Lastname varchar(45),
+Passport_data jsonb,
+Birth_date Date);
+
+
+Create table Orders(
+Id serial primary key,
+Client_id int references Clients(Id),
+Product_id int references Medicines(Id),
+Worker_id int references Workers(Id)
+)
+
+create table Orders(
+Id serial primary key,
+Client_id int references Clients(Id),
+Drug_id int references Medicines(Id),
+Order_date Date,
+Quantity int, 
+Cost Decimal(10, 2)
+);
+
+
+alter table Orders
+add column Worker_id int references Workers(Id);
+
+INSERT INTO Medicines (Name, Category_id, Cost) VALUES
+('Aspirin', 2, 5.99), ('Ibuprofen', 3, 8.50), ('Paracetamol', 1, 3.75), ('Omeprazole', 4, 15.25),
+('Cetirizine', 2, 6.80), ('Simvastatin', 1, 12.99), ('Metformin', 3, 9.45), ('Amoxicillin', 4, 7.20),
+('Loratadine', 1, 5.25), ('Amlodipine', 3, 11.30), ('Losartan', 2, 10.75), ('Sertraline', 4, 14.50),
+('Furosemide', 1, 8.60), ('Codeine', 3, 7.99), ('Lansoprazole', 2, 13.15), ('Hydrochlorothiazide', 4, 9.90),
+('Fluoxetine', 1, 11.75), ('Gabapentin', 3, 12.40), ('Atorvastatin', 2, 14.20), ('Warfarin', 4, 10.60),
+('Clopidogrel', 1, 9.85), ('Diazepam', 2, 8.15), ('Tramadol', 3, 7.50), ('Prednisone', 4, 11.25),
+('Ciprofloxacin', 1, 14.70), ('Methotrexate', 2, 13.80), ('Levothyroxine', 3, 10.20), ('Hydralazine', 4, 12.40),
+('Ranitidine', 1, 6.75), ('Diphenhydramine', 2, 5.60), ('Carvedilol', 3, 9.90), ('Lisinopril', 4, 8.30),
+('Montelukast', 1, 15.50), ('Spironolactone', 2, 11.75), ('Allopurinol', 3, 9.25), ('Amitriptyline', 4, 10.80),
+('Ibuprofen Gel', 1, 7.99), ('Naproxen', 2, 8.50), ('Azithromycin', 3, 14.20), ('Metoprolol', 4, 12.60);
+-- ... (Continuing with 60 more rows);
+
+
+INSERT INTO Category_medicine (category_name) VALUES
+('Pain Relief'),
+('Antibiotics'),
+('Cardiovascular'),
+('Mental Health');
+
+INSERT INTO Workers (name, lastname, passport_data, birth_date) VALUES
+('John', 'Doe', '{"passport_number": "AB123456", "issue_date": "2023-01-15"}', '1990-05-20'),
+('Alice', 'Smith', '{"passport_number": "CD789012", "issue_date": "2022-09-30"}', '1985-11-12'),
+('Bob', 'Johnson', '{"passport_number": "EF345678", "issue_date": "2021-05-10"}', '1995-07-08');
+
+
+alter table Orders
+add column Client_id int;
+
+select * from Orders;
+
+
+select * from medicines;
+
+UPDATE Orders
+SET Cost = (SELECT cost FROM Medicines WHERE Id = Orders.Drug_id) * Orders.quantity;
+
+
+
+
