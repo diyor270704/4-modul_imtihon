@@ -1,0 +1,59 @@
+import psycopg2
+import datetime
+from tabulate import tabulate as display_table
+
+
+def connection_db():
+    con = psycopg2.connect(
+        database='pharmacy_db',
+        host='localhost',
+        user='postgres',
+        port=5432,
+        password='diyor2707'
+    )
+    return con
+
+
+def get_data_from_db(month):
+    con = connection_db()
+    cur = con.cursor()
+    query = '''SELECT id, drug_id, order_date, quantity, cost FROM Orders WHERE EXTRACT(month FROM Order_date) = %s'''
+    cur.execute(query, (month,))
+    data = cur.fetchall()
+    cur.close()
+    con.close()
+    return data
+
+
+ 
+
+
+def get_order(drug_id, quantity):
+    client_id = 1
+    worker_id = 2
+    order_date = datetime.date.today()
+    con = connection_db()
+    cur = con.cursor()
+    query = '''insert into Orders(client_id, drug_id, order_date, quantity, worker_id) values(%s,%s,%s,%s,%s)'''
+    cur.execute(query, (client_id, drug_id, order_date, quantity, worker_id))
+    con.commit()
+
+def user():
+    choise = int(input('1. See data of month\n2. Make an order'))
+    if choise == 1:
+        tabulate(2)
+
+    elif choise == 2:
+        drug_id = int(input('enter drug id to order:'))
+        quantity = int(input('enter quantity of the drug:'))
+        get_order(drug_id=drug_id, quantity=quantity)
+
+
+
+def tabulate(month):
+    data = get_data_from_db(month=month)
+    headers = ['id', 'drug', 'order_date', 'quantity', 'cost']
+    table = display_table(data, headers, tablefmt='grid')
+    print(table)
+
+user()
